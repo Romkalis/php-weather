@@ -155,7 +155,7 @@
    
    <?php
     include 'additionalFile.php';
-    echo '<br>';
+    echo '<br>';  
     include 'addsFolder/additonalFileFromFolder.php';
    ?>
 
