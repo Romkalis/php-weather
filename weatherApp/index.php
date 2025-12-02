@@ -1,3 +1,10 @@
+<?php
+    if(isset($_GET["city"])) {
+        $api_data = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q=Podgorica&appid=5ffc5f7deb72b209149529834f07ea65&units=metric');
+        $forecastArray = json_decode($api_data);
+        print_r($forecastArray);
+    }
+?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -13,9 +20,6 @@
 </head>
 
 <body>
-    <!-- <img src="./assets/weather.jpg" alt="Background" class="bg-pic">
-      -->
-
     <div class="bg-pic"></div>
 
     <div class="container">
