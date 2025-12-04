@@ -1,13 +1,20 @@
 <?php
-    if(isset($_GET["city"])) {
-        $api_data = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q=Podgorica&appid=5ffc5f7deb72b209149529834f07ea65&units=metric');
-        $forecastArray = json_decode($api_data);
-        print_r($forecastArray);
+if (isset($_GET["city"])) {
+    $city = $_GET["city"];
+
+    $api_data = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&appid=5ffc5f7deb72b209149529834f07ea65&units=metric');
+    $forecastArray = json_decode($api_data, false);
+    
+    print_r($forecastArray);
+
+    $weather = $forecastArray->weather[0]->description;
+    $temp = $forecastArray->main->temp;
+    $humidity = $forecastArray->main->humidity;
     }
 ?>
 <!DOCTYPE html>
 <html lang="ru">
-
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,11 +35,24 @@
 
         <form method="get">
             <div class="mb-3">
-                <label for="city" class="form-label">Enter name of your city:</label>
-                <input type="text" class="form-control" id="city" name="city" placteholder="Enter your City"\>
+                <label for="city" class="form-label">Enter name of the city:</label>
+                <input type="text" class="form-control" id="city" name="city" placteholder="Enter your City" \>
             </div>
             <button type="submit" class="btn btn-primary">Yep, check the weather!</button>
         </form>
+    </div>
+    <div class="alert alert-success mt-3" role="alert">
+        <?php
+        if ($city && $weather && $humidity && $temp) {
+            echo "<p>Погода в {$city}: {$weather}</p>";
+            echo "<p>Temperature: {$temp}</p>";
+            echo "<p>Humidity: {$humidity}</p>";
+        } else {
+            echo 'Введите город';
+        };
+        
+
+        ?>
     </div>
 </body>
 
