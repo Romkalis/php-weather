@@ -1,20 +1,62 @@
 <?php
-if (isset($_GET["city"])) {
-    $city = $_GET["city"];
+if (isset($_POST["city"])) {
+    $cityselect = $_POST["cityselect"];
 
-    $api_data = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&appid=5ffc5f7deb72b209149529834f07ea65&units=metric');
-    $forecastArray = json_decode($api_data, false);
+    //  определяем, заполнено ли после через селект, если да - подставляем значение
+    if ($cityselect != "false") {
+        $city = $cityselect;
+    } else {
+        $city = $_POST["city"];
+    }
     
+
+    $api_data = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q=' . $city . '&appid=5ffc5f7deb72b209149529834f07ea65&units=metric');
+    $forecastArray = json_decode($api_data, false);
+
     print_r($forecastArray);
 
     $weather = $forecastArray->weather[0]->description;
     $temp = $forecastArray->main->temp;
     $humidity = $forecastArray->main->humidity;
+    $windSpeed = $forecastArray->wind->speed;
+
+    if ($city && $weather && $humidity && $temp) {
+
+        $output = <<<HTML
+
+        <div class="alert alert-success mt-3" role="alert">
+            <p><b>Погода в {$city}:</b> {$weather}</p>
+            <p><b>Temperature:</b> {$temp}</p>
+            <p><b>Humidity:</b> {$humidity}</p>
+            <p><b>Wind Speed:</b>{$windSpeed}</p>
+        </div>
+        
+        HTML;
+    } else {
+        $output = <<<HTML
+
+        <div class="alert alert-danger mt-3" role="alert">
+            <p><b>The city is nopt found! You can try to choose or enter other city.</b></p>
+        </div>
+        
+        HTML;
     }
+
+
+} else {
+    $output = <<<HTML
+
+        <div class="alert alert-danger mt-3" role="alert">
+            <p><b>Enter the city</b></p>
+        </div>
+        
+        HTML;
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="ru">
- 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,26 +75,29 @@ if (isset($_GET["city"])) {
         <h1 class="h2">Hmm...What's about weather?</h1>
 
 
-        <form method="get">
+        <form method="post">
             <div class="mb-3">
                 <label for="city" class="form-label">Enter name of the city:</label>
-                <input type="text" class="form-control" id="city" name="city" placteholder="Enter your City" \>
+                <input type="text" class="form-control" id="city" name="city" placeholder="Enter your City">
+                <select name="cityselect">
+                    <option value="false">Choose City</option>
+
+                    <option value="Moscow">Moscow</option>
+                    <option value="Cairo">Cairo</option>
+                    <option value="Yekaterinburg">Yekaterinburg</option>
+                    <option value="New_York">New York</option>
+                    <option value="Kazan">Kazan</option>
+                    <option value="Podgorica">Podgorica</option>
+
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">Yep, check the weather!</button>
         </form>
     </div>
-    <div class="alert alert-success mt-3" role="alert">
-        <?php
-        if ($city && $weather && $humidity && $temp) {
-            echo "<p>Погода в {$city}: {$weather}</p>";
-            echo "<p>Temperature: {$temp}</p>";
-            echo "<p>Humidity: {$humidity}</p>";
-        } else {
-            echo 'Введите город';
-        };
-        
 
-        ?>
+    <?php
+    echo $output;
+    ?>
     </div>
 </body>
 
