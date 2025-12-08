@@ -13,7 +13,7 @@ if (isset($_POST["city"])) {
     $api_data = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q=' . $city . '&appid=5ffc5f7deb72b209149529834f07ea65&units=metric');
     $forecastArray = json_decode($api_data, false);
 
-    print_r($forecastArray);
+    // print_r($forecastArray);ye ye ns pyftim
 
     $weather = $forecastArray->weather[0]->description;
     $temp = $forecastArray->main->temp;
